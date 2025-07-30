@@ -14,6 +14,13 @@ class _SignUpPageState extends State<SignUpPage> {
   bool isLoading = false;
   String? error;
 
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   Future<void> signUp() async {
     setState(() { isLoading = true; error = null; });
     final result = await SupabaseService().signUp(
