@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/features/home/presentation/home_scaffold.dart';
+import 'package:flutter_app/features/home/presentation/tabs/dashboard_tab.dart';
+import 'package:flutter_app/features/home/presentation/tabs/setting_tab.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -8,15 +11,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _tabs = [
+    DashboardTab(),
+    SettingTab(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home Page'),
-      ),
-      body: Center(
-        child: Text('Welcome to the Home Page!'),
-      ),
+    return HomeScaffold(
+      body: _tabs[_selectedIndex],
+      selectedIndex: _selectedIndex,
+      onTabSelected: _onItemTapped,
     );
   }
 }

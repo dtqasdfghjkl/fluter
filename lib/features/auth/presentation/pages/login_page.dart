@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/supabase_service.dart';
+import '../../utils/validators.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,13 +12,24 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
-  String? error;
+  String? _errorEmail;
+  String? _errorPassword;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   Future<void> login() async {
+    if (!_formKey.currentState!.validate()) return;
     setState(() {
       isLoading = true;
-      error = null;
+      _errorEmail = null;
+      _errorPassword = null;
     });
     final result = await SupabaseService().signIn(
       emailController.text,
@@ -25,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
     );
     setState(() {
       isLoading = false;
-      error = result;
+      _errorEmail = result;
     });
     if (result == null) {
       // Login success, navigate to home or show success
@@ -47,47 +59,57 @@ class _LoginPageState extends State<LoginPage> {
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight - 32),
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight - 32,
+              ),
               child: IntrinsicHeight(
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: emailController,
-                      decoration: const InputDecoration(labelText: 'Email'),
-                    ),
-                    TextField(
-                      controller: passwordController,
-                      decoration: const InputDecoration(labelText: 'Password'),
-                      obscureText: true,
-                    ),
-                    const SizedBox(height: 16),
-                    if (error != null)
-                      Text(error!, style: const TextStyle(color: Colors.red)),
-
-                    // 👉 SizedBox chiếm toàn bộ phần còn lại
-                    // Expanded(
-                    //   child: Container(
-                    //     constraints: const BoxConstraints(minHeight: 100),
-                    //     color: Colors.grey[200], // để dễ thấy vùng chiếm
-                    //     child: const Center(
-                    //       child: Text('Vùng chiếm toàn bộ phần còn lại'),
-                    //     ),
-                    //   ),
-                    // ),
-
-                    ElevatedButton(
-                      onPressed: isLoading ? null : login,
-                      child: isLoading
-                          ? const CircularProgressIndicator()
-                          : const Text('Login'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/signup');
-                      },
-                      child: const Text('Chưa có tài khoản? Đăng ký'),
-                    ),
-                  ],
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextFormField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          errorText: _errorEmail,
+                        ),
+                        validator: AuthValidators.validateEmail,
+                      ),
+                      TextFormField(
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          errorText: _errorPassword,
+                        ),
+                        obscureText: true,
+                        validator: AuthValidators.validatePassword,
+                      ),
+                      const SizedBox(height: 16),
+                      // 👉 SizedBox chiếm toàn bộ phần còn lại
+                      // Expanded(
+                      //   child: Container(
+                      //     constraints: const BoxConstraints(minHeight: 100),
+                      //     color: Colors.grey[200], // để dễ thấy vùng chiếm
+                      //     child: const Center(
+                      //       child: Text('Vùng chiếm toàn bộ phần còn lại'),
+                      //     ),
+                      //   ),
+                      // ),
+                      ElevatedButton(
+                        onPressed: isLoading ? null : login,
+                        child: isLoading
+                            ? const CircularProgressIndicator()
+                            : const Text('Login'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, '/signup');
+                        },
+                        child: const Text('Chưa có tài khoản? Đăng ký'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
