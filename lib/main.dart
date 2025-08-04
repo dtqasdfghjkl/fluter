@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:flutter_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:flutter_app/features/auth/presentation/pages/login_page.dart';
@@ -13,6 +14,9 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider(
+          create: (_) => serviceLocator<AppUserCubit>(),
+        ),
+        BlocProvider(
           create: (_) => serviceLocator<AuthBloc>(),
         ),
       ],
@@ -21,22 +25,42 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<AuthBloc>().add(AuthUserLogin());
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       // theme: AppTheme.darkThemeMode,
-      initialRoute: '/signup',
-      routes: {
-        '/': (context) => const MyHomePage(),
-        '/signup': (context) => const SignUpPage(),
-        '/login': (context) => const LoginPage(),
+      // initialRoute: '/',
+      // routes: {
+      //   '/': (context) => const MyHomePage(),
+      //   '/signup': (context) => const SignUpPage(),
+      //   '/login': (context) => const LoginPage(),
+      // },
+      home: BlocSelector<AppUserCubit, AppUserState, bool>(
+      selector: (state) {
+        return state is AppUserLoggedIn;
       },
+      builder: (context, isLoggedIn) {
+        if (isLoggedIn) {
+          return const MyHomePage();
+        }
+        return const LoginPage();
+      },
+    ),
     );
   }
 }

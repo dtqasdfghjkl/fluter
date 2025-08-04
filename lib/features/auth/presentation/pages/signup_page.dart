@@ -3,10 +3,11 @@ import 'package:flutter_app/core/common/widgets/loader.dart';
 import 'package:flutter_app/core/utils/show_snackbar.dart';
 import 'package:flutter_app/core/utils/validators.dart';
 import 'package:flutter_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_app/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../data/supabase_service.dart';
 
 class SignUpPage extends StatefulWidget {
+  static route() => MaterialPageRoute(builder: (_) => const SignUpPage());
   const SignUpPage({super.key});
 
   @override
@@ -37,8 +38,8 @@ class _SignUpPageState extends State<SignUpPage> {
     context.read<AuthBloc>().add(
       AuthSignUp(
         name: "Me Me",
-        email: emailController.text,
-        password: passwordController.text,
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
       ),
     );
     // final result = await SupabaseService().signUp(
@@ -60,7 +61,6 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign Up')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: BlocConsumer<AuthBloc, AuthState>(
@@ -73,7 +73,8 @@ class _SignUpPageState extends State<SignUpPage> {
               showSnackBar(context, state.message);
             } else if (state is AuthSuccess) {
               isLoading = false;
-              Navigator.pushReplacementNamed(context, '/login');
+              // Navigator.pushReplacementNamed(context, '/login');
+              Navigator.push(context, LoginPage.route());
             }
           },
           builder: (context, state) {

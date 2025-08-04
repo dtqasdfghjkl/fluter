@@ -1,17 +1,21 @@
 import 'package:flutter_app/core/error/exceptions.dart';
+import 'package:flutter_app/features/auth/data/models/user_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract interface class AuthRemoteDataSource {
-  Future<String> signInWithEmailAndPassword({
+  Session? get currentUserSession;
+  Future<UserModel> signInWithEmailAndPassword({
     required String email,
     required String password,
   });
 
-  Future<String> signUpWithEmailAndPassword({
+  Future<UserModel> signUpWithEmailAndPassword({
     required String name,
     required String email,
     required String password,
   });
+
+    Future<UserModel?> getCurrentUserData();
 
   Future<void> signOut();
 }
@@ -21,17 +25,30 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl(this.supabaseClient);
 
   @override
-  Future<String> signInWithEmailAndPassword({
+  Session? get currentUserSession => supabaseClient.auth.currentSession;
+
+  @override
+  Future<UserModel> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
-    // Implement the actual sign-in logic here, e.g., using Supabase or another service.
-    // For now, we return a dummy success message.
-    return 'Sign-in successful';
+    try {
+      final response = await supabaseClient.auth.signInWithPassword(
+        password: password,
+        email: email,
+      );
+      
+      if (response.user == null) {
+        throw ServerException("User is null");
+      }
+      return UserModel.fromJson(response.user!.toJson());
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
   }
 
   @override
-  Future<String> signUpWithEmailAndPassword({
+  Future<UserModel> signUpWithEmailAndPassword({
     required String name,
     required String email,
     required String password,
@@ -47,7 +64,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (response.user == null) {
         throw ServerException("User is null");
       }
-      return response.user!.id;
+      return UserModel.fromJson(response.user!.toJson());
     } catch (e) {
       throw ServerException(e.toString());
     }
@@ -56,5 +73,20 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> signOut() async {
     // Implement the actual sign-out logic here.
+  }
+  
+  @override
+  Future<UserModel?> getCurrentUserData() async {
+    try {
+      final id = currentUserSession?.user.id;
+      if (id != null) {
+
+      final userData = await supabaseClient.from('profiles').select().eq('id', id).single();
+      return UserModel.fromJson(userData).copyWith(email: currentUserSession?.user.email);
+      }
+      return null;
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
   }
 }
