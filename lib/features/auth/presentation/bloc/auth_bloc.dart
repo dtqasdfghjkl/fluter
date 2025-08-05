@@ -1,8 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:flutter_app/core/common/entities/user.dart';
+import 'package:flutter_app/core/usecase/usecase.dart';
 import 'package:flutter_app/features/auth/domain/usercases/current_user.dart';
 import 'package:flutter_app/features/auth/domain/usercases/user_login.dart';
+import 'package:flutter_app/features/auth/domain/usercases/user_logout.dart';
 import 'package:flutter_app/features/auth/domain/usercases/user_sign_up.dart';
 import 'package:meta/meta.dart';
 
@@ -13,21 +15,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserSignUp _userSignUp;
   final UserLogin _userLogin;
   final CurrentUser _currentUser;
+  final UserLogout _userLogout;
   final AppUserCubit _appUserCubit;
   AuthBloc({
     required UserSignUp userSignUp,
     required UserLogin userLogin,
+    required UserLogout userLogout,
     required CurrentUser currentUser,
     required AppUserCubit appUserCubit,
   }) : _userSignUp = userSignUp,
        _userLogin = userLogin,
+       _userLogout = userLogout,
        _currentUser = currentUser,
        _appUserCubit = appUserCubit,
        super(AuthInitial()) {
-    on<AuthEvent>((_, emit) =>  emit(AuthLoading()));
+    on<AuthEvent>((_, emit) => emit(AuthLoading()));
     on<AuthSignUp>(_onAuthSignUp);
     on<AuthLogin>(_onAuthLogin);
     on<AuthUserLogin>(_isUserLoggedIn);
+    on<AuthLogout>(_onAuthLogout);
   }
 
   void _onAuthSignUp(AuthSignUp event, Emitter<AuthState> emit) async {
@@ -56,6 +62,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
+  void _onAuthLogout(AuthLogout event, Emitter<AuthState> emit) async {
+    final res = await _userLogout(NoParams());
+
+    res.fold(
+      (failure) => emit(AuthFailure(failure.message)),
+      (user) => _emitAuthSuccess(null, emit),
+    );
+  }
+
   void _isUserLoggedIn(AuthUserLogin event, Emitter<AuthState> emit) async {
     final res = await _currentUser(NoParams());
 
@@ -65,7 +80,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
-  void _emitAuthSuccess(User user, Emitter<AuthState> emit) {
+  void _emitAuthSuccess(User? user, Emitter<AuthState> emit) {
     _appUserCubit.updateUser(user);
     emit(AuthSuccess(user));
   }

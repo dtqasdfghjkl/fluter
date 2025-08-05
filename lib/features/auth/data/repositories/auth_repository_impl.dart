@@ -24,9 +24,13 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, String>> signOut() {
-    // TODO: implement signOut
-    throw UnimplementedError();
+  Future<Either<Failure, bool>> signOut() async {
+    try {
+      await remoteDataSource.signOut();
+      return Right(true);
+    } on ServerException catch (e) {
+      return Left(Failure(e.message));
+    }
   }
 
   @override
@@ -59,7 +63,6 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, User>> currentUser() async {
     try {
       final user = await remoteDataSource.getCurrentUserData();
-
       return user != null ? Right(user) : Left(Failure('User not login'));
     } on ServerException catch (e) {
       return Left(Failure(e.message));

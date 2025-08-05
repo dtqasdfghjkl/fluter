@@ -15,7 +15,7 @@ abstract interface class AuthRemoteDataSource {
     required String password,
   });
 
-    Future<UserModel?> getCurrentUserData();
+  Future<UserModel?> getCurrentUserData();
 
   Future<void> signOut();
 }
@@ -37,7 +37,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         password: password,
         email: email,
       );
-      
+
       if (response.user == null) {
         throw ServerException("User is null");
       }
@@ -54,13 +54,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String password,
   }) async {
     try {
-      print("sing up with email: $email, name: $name, password: $password");
       final response = await supabaseClient.auth.signUp(
         password: password,
         email: email,
         data: {'name': name},
       );
-      print("response: $response");
       if (response.user == null) {
         throw ServerException("User is null");
       }
@@ -72,17 +70,29 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<void> signOut() async {
-    // Implement the actual sign-out logic here.
+    try {
+      final id = currentUserSession?.user.id;
+      if (id != null) {
+        await supabaseClient.auth.signOut();
+      }
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
   }
-  
+
   @override
   Future<UserModel?> getCurrentUserData() async {
     try {
       final id = currentUserSession?.user.id;
       if (id != null) {
-
-      final userData = await supabaseClient.from('profiles').select().eq('id', id).single();
-      return UserModel.fromJson(userData).copyWith(email: currentUserSession?.user.email);
+        final userData = await supabaseClient
+            .from('profiles')
+            .select()
+            .eq('id', id)
+            .single();
+        return UserModel.fromJson(
+          userData,
+        ).copyWith(email: currentUserSession?.user.email);
       }
       return null;
     } catch (e) {

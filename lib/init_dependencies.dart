@@ -4,6 +4,7 @@ import 'package:flutter_app/features/auth/data/repositories/auth_repository_impl
 import 'package:flutter_app/features/auth/domain/repository/auth_repository.dart';
 import 'package:flutter_app/features/auth/domain/usercases/current_user.dart';
 import 'package:flutter_app/features/auth/domain/usercases/user_login.dart';
+import 'package:flutter_app/features/auth/domain/usercases/user_logout.dart';
 import 'package:flutter_app/features/auth/domain/usercases/user_sign_up.dart';
 import 'package:flutter_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -37,12 +38,14 @@ void _initAuth() {
     // Use cases
     ..registerFactory(() => UserSignUp(serviceLocator()))
     ..registerFactory(() => UserLogin(serviceLocator()))
+    ..registerFactory(() => UserLogout(serviceLocator()))
     ..registerFactory(() => CurrentUser(serviceLocator()))
     // Bloc
     ..registerLazySingleton(
       () => AuthBloc(
         userSignUp: serviceLocator(),
         userLogin: serviceLocator(),
+        userLogout: serviceLocator(),
         currentUser: serviceLocator(),
         appUserCubit: serviceLocator(),
       ),

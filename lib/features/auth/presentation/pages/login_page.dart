@@ -1,8 +1,13 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/common/widgets/loader.dart';
+import 'package:flutter_app/core/theme/app_pallete.dart';
 import 'package:flutter_app/core/utils/show_snackbar.dart';
 import 'package:flutter_app/core/utils/validators.dart';
 import 'package:flutter_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_app/features/auth/presentation/pages/signup_page.dart';
+import 'package:flutter_app/features/auth/presentation/widgets/auth_field.dart';
+import 'package:flutter_app/features/auth/presentation/widgets/auth_gradient_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatefulWidget {
@@ -75,10 +80,6 @@ class _LoginPageState extends State<LoginPage> {
                 child: BlocConsumer<AuthBloc, AuthState>(
                   listener: (context, state) {
                     if (state is AuthFailure) {
-                      setState(() {
-                        isLoading = false;
-                        _errorEmail = state.message;
-                      });
                       showSnackBar(context, state.message);
                     } else if (state is AuthSuccess) {
                       isLoading = false;
@@ -94,48 +95,51 @@ class _LoginPageState extends State<LoginPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          TextFormField(
-                            controller: emailController,
-                            decoration: InputDecoration(
-                              labelText: 'Email',
-                              errorText: _errorEmail,
+                          Text(
+                            "Sign in.",
+                            style: TextStyle(
+                              fontSize: 50,
+                              fontWeight: FontWeight.bold,
                             ),
+                          ),
+                          const SizedBox(height: 30),
+                          AuthField(
+                            hintText: 'Email',
+                            controller: emailController,
                             validator: AuthValidators.validateEmail,
                           ),
-                          TextFormField(
+                          const SizedBox(height: 15),
+                          AuthField(
+                            hintText: 'Password',
                             controller: passwordController,
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              errorText: _errorPassword,
-                            ),
                             obscureText: true,
                             validator: AuthValidators.validatePassword,
                           ),
-                          const SizedBox(height: 16),
-                          // 👉 SizedBox chiếm toàn bộ phần còn lại
-                          // Expanded(
-                          //   child: Container(
-                          //     constraints: const BoxConstraints(minHeight: 100),
-                          //     color: Colors.grey[200], // để dễ thấy vùng chiếm
-                          //     child: const Center(
-                          //       child: Text('Vùng chiếm toàn bộ phần còn lại'),
-                          //     ),
-                          //   ),
-                          // ),
-                          ElevatedButton(
-                            onPressed: isLoading ? null : login,
-                            child: isLoading
-                                ? const CircularProgressIndicator()
-                                : const Text('Login'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pushReplacementNamed(
-                                context,
-                                '/signup',
-                              );
-                            },
-                            child: const Text('Chưa có tài khoản? Đăng ký'),
+
+                          const SizedBox(height: 20),
+                          AuthGradientButton(login: login, text: 'Login'),
+                          const SizedBox(height: 20),
+                          RichText(
+                            text: TextSpan(
+                              text: 'Chưa có tài khoản? ',
+                              style: Theme.of(context).textTheme.titleMedium,
+                              children: [
+                                TextSpan(
+                                  text: 'Đăng ký',
+                                  style: TextStyle(
+                                    color: AppPallete.gradient2,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.push(
+                                        context,
+                                        SignUpPage.route(),
+                                      );
+                                    },
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
