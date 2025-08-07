@@ -4,6 +4,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:flutter_app/core/common/widgets/loader.dart';
+import 'package:flutter_app/core/constants/constants.dart';
 import 'package:flutter_app/core/theme/app_pallete.dart';
 import 'package:flutter_app/core/utils/pick_image.dart';
 import 'package:flutter_app/core/utils/show_snackbar.dart';
@@ -127,37 +128,36 @@ class _AddNewBlogPageState extends State<AddNewBlogPage> {
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
-                        children:
-                            ['Technology', 'Health', 'Lifestyle', 'Travel']
-                                .map(
-                                  (tag) => Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        if (selectedTopics.contains(tag)) {
-                                          selectedTopics.remove(tag);
-                                        } else {
-                                          selectedTopics.add(tag);
-                                        }
-                                        setState(() {});
-                                      },
-                                      child: Chip(
-                                        label: Text(tag),
-                                        color: selectedTopics.contains(tag)
-                                            ? const WidgetStatePropertyAll(
-                                                AppPallete.gradient1,
-                                              )
-                                            : null,
-                                        side: selectedTopics.contains(tag)
-                                            ? null
-                                            : BorderSide(
-                                                color: AppPallete.borderColor,
-                                              ),
-                                      ),
-                                    ),
+                        children: Constants.topics
+                            .map(
+                              (tag) => Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (selectedTopics.contains(tag)) {
+                                      selectedTopics.remove(tag);
+                                    } else {
+                                      selectedTopics.add(tag);
+                                    }
+                                    setState(() {});
+                                  },
+                                  child: Chip(
+                                    label: Text(tag),
+                                    color: selectedTopics.contains(tag)
+                                        ? const WidgetStatePropertyAll(
+                                            AppPallete.gradient1,
+                                          )
+                                        : null,
+                                    side: selectedTopics.contains(tag)
+                                        ? null
+                                        : BorderSide(
+                                            color: AppPallete.borderColor,
+                                          ),
                                   ),
-                                )
-                                .toList(),
+                                ),
+                              ),
+                            )
+                            .toList(),
                       ),
                     ),
                     SizedBox(height: 10),
