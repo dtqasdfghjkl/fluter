@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class BlogEditor extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
+  final String? Function(String? value) validator;
   const BlogEditor({
     super.key,
     required this.controller,
     required this.hintText,
+    required this.validator,
   });
 
   @override
@@ -15,6 +17,7 @@ class BlogEditor extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(hintText: hintText),
       maxLines: null,
+      validator: validator,
     );
   }
 }
