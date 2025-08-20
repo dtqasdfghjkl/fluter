@@ -17,7 +17,7 @@ jobs:
       # 2. Cài Flutter
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.27.0"
+          flutter-version: "3.35.1"
 
       # 3. Cài dependencies
       - run: flutter pub get
