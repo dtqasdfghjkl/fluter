@@ -18,22 +18,27 @@ import 'package:flutter_app/features/blog/presentation/bloc/blog_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final serviceLocator = GetIt.instance;
 
-Future<void> initDependencies() async {
+class MockSupabaseClient extends Mock implements SupabaseClient {}
+
+Future<void> initDependencies({bool isTest = false}) async {
   _initAuth();
   _initBlog();
-  final supabase = await Supabase.initialize(
-    url: const String.fromEnvironment('SUPABASE_URL'),
-    anonKey: const String.fromEnvironment('SUPABASE_ANON_KEY'),
-  );
+  final supabaseClient = isTest == true
+      ? MockSupabaseClient()
+      : (await Supabase.initialize(
+          url: const String.fromEnvironment('SUPABASE_URL'),
+          anonKey: const String.fromEnvironment('SUPABASE_ANON_KEY'),
+        )).client;
 
-  Hive.defaultDirectory = (await getApplicationDocumentsDirectory()).path;
+  Hive.defaultDirectory = isTest == true ? 'tmp/test-docs' : (await getApplicationDocumentsDirectory()).path;
 
-  serviceLocator.registerLazySingleton(() => supabase.client);
+  serviceLocator.registerLazySingleton(() => supabaseClient);
 
   serviceLocator.registerLazySingleton(() => Hive.box(name: 'blogs'));
 
@@ -41,7 +46,9 @@ Future<void> initDependencies() async {
 
   //core
   serviceLocator.registerLazySingleton(() => AppUserCubit());
-  serviceLocator.registerFactory(() => ConnectionCheckerImpl(serviceLocator()));
+  serviceLocator.registerFactory<ConnectionChecker>(
+    () => ConnectionCheckerImpl(serviceLocator()),
+  );
 }
 
 void _initAuth() {

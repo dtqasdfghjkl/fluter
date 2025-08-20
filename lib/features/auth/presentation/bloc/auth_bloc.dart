@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:flutter_app/core/common/entities/user.dart';
 import 'package:flutter_app/core/usecase/usecase.dart';
@@ -6,7 +5,8 @@ import 'package:flutter_app/features/auth/domain/usercases/current_user.dart';
 import 'package:flutter_app/features/auth/domain/usercases/user_login.dart';
 import 'package:flutter_app/features/auth/domain/usercases/user_logout.dart';
 import 'package:flutter_app/features/auth/domain/usercases/user_sign_up.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/foundation.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';

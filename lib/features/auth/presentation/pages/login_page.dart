@@ -23,8 +23,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
-  String? _errorEmail;
-  String? _errorPassword;
+  // String? _errorEmail;
+  // String? _errorPassword;
 
   @override
   void dispose() {
@@ -37,8 +37,8 @@ class _LoginPageState extends State<LoginPage> {
     if (!_formKey.currentState!.validate()) return;
     setState(() {
       isLoading = true;
-      _errorEmail = null;
-      _errorPassword = null;
+      // _errorEmail = null;
+      // _errorPassword = null;
     });
     context.read<AuthBloc>().add(
       AuthLogin(

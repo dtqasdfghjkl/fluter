@@ -2,7 +2,7 @@ import 'package:flutter_app/core/error/failures.dart';
 import 'package:flutter_app/core/usecase/usecase.dart';
 import 'package:flutter_app/core/common/entities/user.dart';
 import 'package:flutter_app/features/auth/domain/repository/auth_repository.dart';
-import 'package:fpdart/src/either.dart';
+import 'package:fpdart/fpdart.dart';
 
 class UserSignUp implements UseCase<User, UserSignUpParams> {
   final AuthRepository authRepository;

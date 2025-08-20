@@ -6,7 +6,7 @@ import 'package:flutter_app/features/auth/data/datasources/auth_remote_data_sour
 import 'package:flutter_app/core/common/entities/user.dart';
 import 'package:flutter_app/features/auth/data/models/user_model.dart';
 import 'package:flutter_app/features/auth/domain/repository/auth_repository.dart';
-import 'package:fpdart/src/either.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
 class AuthRepositoryImpl implements AuthRepository {

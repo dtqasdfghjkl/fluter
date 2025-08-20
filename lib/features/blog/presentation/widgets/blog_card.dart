@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/core/theme/app_pallete.dart';
 import 'package:flutter_app/core/utils/caculate_reading_time.dart';
 import 'package:flutter_app/features/blog/domain/entities/blog.dart';
 import 'package:flutter_app/features/blog/presentation/pages/blog_viewer_page.dart';

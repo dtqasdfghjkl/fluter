@@ -1,5 +1,4 @@
 import 'package:flutter_app/features/blog/data/models/blog_model.dart';
-import 'package:flutter_app/features/blog/domain/entities/blog.dart';
 import 'package:hive/hive.dart';
 
 abstract interface class BlogLocalDataSource {

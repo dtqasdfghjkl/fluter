@@ -9,7 +9,7 @@ import 'package:flutter_app/features/blog/data/datasources/blog_remote_data_sour
 import 'package:flutter_app/features/blog/data/models/blog_model.dart';
 import 'package:flutter_app/features/blog/domain/entities/blog.dart';
 import 'package:flutter_app/features/blog/domain/repositories/blog_repository.dart';
-import 'package:fpdart/src/either.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:uuid/uuid.dart';
 
 class BlogRepositoryImpl implements BlogRepository {

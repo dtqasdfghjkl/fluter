@@ -9,7 +9,6 @@ import 'package:flutter_app/core/theme/app_pallete.dart';
 import 'package:flutter_app/core/utils/pick_image.dart';
 import 'package:flutter_app/core/utils/show_snackbar.dart';
 import 'package:flutter_app/features/blog/presentation/bloc/blog_bloc.dart';
-import 'package:flutter_app/features/blog/presentation/pages/blog_page.dart';
 import 'package:flutter_app/features/blog/presentation/widgets/blog_editor.dart';
 import 'package:flutter_app/features/blog/utils/validators.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -106,7 +105,7 @@ class _AddNewBlogPageState extends State<AddNewBlogPage> {
                                 radius: const Radius.circular(10),
                                 strokeCap: StrokeCap.round,
                               ),
-                              child: Container(
+                              child: SizedBox(
                                 height: 150,
                                 width: double.infinity,
                                 child: Column(
