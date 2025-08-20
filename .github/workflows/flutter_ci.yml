@@ -2,9 +2,9 @@ name: Flutter CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "blog-page" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "blog-page" ]
 
 jobs:
   build:
@@ -24,7 +24,7 @@ jobs:
 
       # 4. Chạy linter + test
       - run: flutter analyze
-      - run: flutter test
+      - run: flutter test --dart-define-from-file=config.dev.json
 
       # 5. Build APK (hoặc iOS nếu cần)
-      - run: flutter build apk --release
+      - run: flutter build apk --dart-define-from-file=config.dev.json --release
