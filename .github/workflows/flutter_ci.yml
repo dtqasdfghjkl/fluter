@@ -11,20 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Lấy source code
+      # 1. Get source code
       - uses: actions/checkout@v4
 
-      # 2. Cài Flutter
+      # 2. Install Flutter
       - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.35.1"
 
-      # 3. Cài dependencies
+      # 3. Install dependencies
       - run: flutter pub get
 
-      # 4. Chạy linter + test
+      # 4. Run linter + test
       - run: flutter analyze
       - run: flutter test --dart-define-from-file=config.dev.json
 
-      # 5. Build APK (hoặc iOS nếu cần)
-      - run: flutter build apk --dart-define-from-file=config.dev.json --release
+      # 5. Build
+      # - run: flutter build apk --dart-define-from-file=config.dev.json --release
+      - run: flutter build web --dart-define-from-file=config.dev.json --release
