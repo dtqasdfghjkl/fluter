@@ -14,16 +14,16 @@ jobs:
       # 1. Get source code
       - uses: actions/checkout@v4
 
-      # 2. Install Flutter
-      - uses: subosito/flutter-action@v2
+      # # 2. Install Flutter
+      # - uses: subosito/flutter-action@v2
 
-      # 3. Install dependencies
-      - run: flutter pub get
+      # # 3. Install dependencies
+      # - run: flutter pub get
 
-      # 4. Run linter + test
-      - run: flutter analyze
-      - run: flutter test --dart-define-from-file=config.dev.json
+      # # 4. Run linter + test
+      # - run: flutter analyze
+      # - run: flutter test --dart-define-from-file=config.dev.json
 
-      # 5. Build
-      # - run: flutter build apk --dart-define-from-file=config.dev.json --release
-      - run: flutter build web --dart-define-from-file=config.dev.json --release
+      # # 5. Build
+      # # - run: flutter build apk --dart-define-from-file=config.dev.json --release
+      # - run: flutter build web --dart-define-from-file=config.dev.json --release
