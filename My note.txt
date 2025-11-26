@@ -1,0 +1,24 @@
+Xóa file build
+rm -rf be_local/build
+Đổi BrowserRouter thành HashRouter
+sed -i "s/BrowserRouter/HashRouter/gi" src/App.tsx
+build lại FE(bỏ vào source BE): yarn build -> cp -r folderFE folderBE
+Đổi lại BrowserRouter
+
+Xóa file exe server
+build lại be 
+đóng gói BE thành file exe: pkg .
+copy file exe vào thư mục instaff để đóng gói app bằng Inno Setuo 6
+chạy "C:\\Program Files (x86)\\Inno Setup 6\\iscc" //O"E:\\" be_local/"${ISS_FILE}" (file iss trong be_local)
+
+File cần bỏ trong IS6:
+install.bat
+uninstall.bat
+AppFE.exe => build từ electron
+Server.exr => build từ BE(ở trên)
+nssm.exe (để dùng bat)
+.env (nếu có)
+\* (thêm các file còn lại nếu có)
+
+[Run] file install.bat
+[UninstallRun] file uninstall.bat
